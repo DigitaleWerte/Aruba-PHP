@@ -1,0 +1,20 @@
+{
+  "name": "digitale-werte/aruba-php",
+  "description": "A Wrapper Library for ArubaOS/HP Procurve Rest API",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Heiner Ohm",
+      "email": "heiner.ohm@digitale-werte.com"
+    }
+  ],
+  "require": {
+
+  },
+  "autoload": {
+    "psr-4": {
+      "DigitaleWerte\\Wrapper\\": "src/DigitaleWerte/Wrapper"
+    }
+  }
+}
