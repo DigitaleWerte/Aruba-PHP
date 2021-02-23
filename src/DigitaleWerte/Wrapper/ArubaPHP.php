@@ -40,14 +40,14 @@ class ArubaPHP
         if ($port >= 1 AND $port <= 65535) {
             $this->devPort = $port;
         } else {
-            throw new InvalidArgumentException("Error: Port must be between 1 and 65535");
+            throw new Exception("Error: Port must be between 1 and 65535");
 
         }
 
         if ($protocol == "https" OR $protocol == "http") {
             $this->reqProtocol = $protocol;
         } else {
-            throw new InvalidArgumentException("Error. Protocol must be http or https");
+            throw new Exception("Error. Protocol must be http or https");
 
 
         }
@@ -134,8 +134,99 @@ class ArubaPHP
         } else {
             return false;
         }
+    }
+
+    /**
+     * This method returns a array conaining the saved Software Versions.
+     * @return array|bool   Array containing the Image Versions in the keys "Primary" and "Secondary"
+     */
+    function getInstalledImages() {
+        $json = '{"cmd":"show flash"}';
+
+        $request['method'] = 'POST';
+        $request['uri'] = "/rest/v4/cli";
+        $request['postdata'] = $json;
+
+
+        $response = $this->doRequest($request);
+
+        $obj = json_decode($response);
+
+        if ($obj->{'result_base64_encoded'}) {
+                $returnarray = array();
+
+                $lines=explode("\n", base64_decode($obj->{'result_base64_encoded'}));
+
+                foreach ($lines as $line) {
+                    if (substr( $line, 0, 13 ) === "Primary Image") {
+                        $words = explode(" ", $line);
+                        foreach ($words as $word) {
+                            if (preg_match('/^[A-Z]{1,2}.\d\d.\d\d.\d\d\d\d/', $word)) {
+                                $returnarray['Primary'] = $word;
+                            }
+                        }
+
+
+
+                    }
+                }
+
+                foreach ($lines as $line) {
+                    if (substr( $line, 0, 15 ) === "Secondary Image") {
+                        $words = explode(" ", $line);
+                        foreach ($words as $word) {
+                            if (preg_match('/^[A-Z]{1,2}.\d\d.\d\d.\d\d\d\d/', $word)) {
+                                $returnarray['Secondary'] = $word;
+                            }
+                        }
+
+                    }
+                }
+
+                return $returnarray;
+        } else {
+            return false;
+        }
 
     }
+
+    /**
+     *     * @return bool|string Return the Primary boot Image Name
+     */
+    function getDefaultBootImage() {
+        $json = '{"cmd":"show flash"}';
+
+        $request['method'] = 'POST';
+        $request['uri'] = "/rest/v4/cli";
+        $request['postdata'] = $json;
+
+
+        $response = $this->doRequest($request);
+
+        $obj = json_decode($response);
+
+        if ($obj->{'result_base64_encoded'}) {
+
+
+            $lines=explode("\n", base64_decode($obj->{'result_base64_encoded'}));
+
+            foreach ($lines as $line) {
+                if (substr( $line, 0, 12 ) === "Default Boot") {
+                    $words = explode(" ", $line);
+                    foreach ($words as $word) {
+                        if ($word == "Primary" or $word == "Secondary") {
+                            return $word;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return false;
+
+    }
+
 
 
     /**
@@ -346,10 +437,6 @@ class ArubaPHP
         curl_close ($ch);
 
 
-
-        $obj = json_decode($server_output);
-
-
     }
 
      private function authenticate() {
@@ -402,7 +489,7 @@ class ArubaPHP
     }
 
     /**
-     * @param $reqParam Array with many fields. the required fields are "method" (GET,POST,UPDATE,DELTE), "uri" and optional 'paramater'
+     * @param $reqParam array with many fields. the required fields are "method" (GET,POST,UPDATE,DELTE), "uri" and optional 'paramater'
      */
     private function doRequest($reqParam) {
 

@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-
+      "ext-json": "*"
   },
   "autoload": {
     "psr-4": {
