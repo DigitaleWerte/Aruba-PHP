@@ -276,10 +276,10 @@ class ArubaPHP
     /**
      * This method is initiating a firmware download to the switch and is checking that the switch has written the firmware into the selected flash partition.
      * @param string $url Source of the Installation File. Valid values are 'upload' and 'fortiguard'
-     * @param string $partition primary|secondary       The Name of the partition where the firmware will be written to
+     * @param string $partition Primary|secondary       The Name of the partition where the firmware will be written to
      * @return boolean true for successful operation.
      */
-    function updateSystemFirmware($url, $partition = "primary" ) {
+    function updateSystemFirmware($url, $partition = "Primary" ) {
 
 
         if ($partition == 'secondary') {
