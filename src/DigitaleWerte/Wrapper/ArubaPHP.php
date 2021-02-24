@@ -373,7 +373,7 @@ class ArubaPHP
     function updateSystemFirmware($url, $partition = "Primary" ) {
 
 
-        if ($partition == 'secondary') {
+        if ($partition == 'Secondary') {
             $partition = "BI_SECONDARY_IMAGE";
         } else {
             $partition = "BI_PRIMARY_IMAGE";
