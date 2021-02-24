@@ -297,6 +297,7 @@ class ArubaPHP
         $obj = json_decode($response);
 
         if (isset($obj->{'message'}) && $obj->{'message'} == "Device is rebooting") {
+            $this->authcookie = "";
             return true;
         } else {
             return false;
@@ -386,7 +387,7 @@ class ArubaPHP
         $request['postdata'] = $json;
 
         $response = $this->doRequest($request);
-        echo "response; " . $response;
+
         $obj = json_decode($response);
 
         if ($obj->{'message'} == "File transfer initiated") {
@@ -435,6 +436,8 @@ class ArubaPHP
         $server_output = curl_exec ($ch);
 
         curl_close ($ch);
+
+        $this->authcookie = "";
 
 
     }
