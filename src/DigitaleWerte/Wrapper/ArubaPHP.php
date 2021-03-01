@@ -312,7 +312,7 @@ class ArubaPHP
      */
     function getConfiguration($config = "running", $base64 = true)
     {
-        $json = '{"cmd":"show startup"}';
+        $json = '{"cmd":"show config"}';
 
         if ($config == "running") {
             $json = '{"cmd":"show run"}';
